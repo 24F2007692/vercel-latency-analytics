@@ -26,6 +26,16 @@ app.add_middleware(
 )
 
 
+@app.middleware("http")
+async def ensure_cors_headers(request: Request, call_next):
+    response = await call_next(request)
+    # Force permissive CORS headers for all responses
+    response.headers.setdefault("Access-Control-Allow-Origin", "*")
+    response.headers.setdefault("Access-Control-Allow-Methods", "POST, OPTIONS")
+    response.headers.setdefault("Access-Control-Allow-Headers", "*")
+    return response
+
+
 def calculate_percentile(values, percentile):
     """Calculate percentile without numpy (inclusive linear interpolation)."""
     if not values:
