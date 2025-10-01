@@ -1,4 +1,5 @@
 from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 
 # Reuse the embedded telemetry from the existing module to avoid duplication
@@ -20,7 +21,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
     allow_credentials=False,
-    allow_methods=["POST", "OPTIONS"],
+    allow_methods=["*"],
     allow_headers=["*"]
 )
 
@@ -73,6 +74,33 @@ async def compute_metrics(request: Request):
         })
 
     return response
+
+
+@app.get("/")
+async def root_info():
+    return {
+        "message": "Latency Analytics API",
+        "usage": {
+            "POST /": {
+                "body": {"regions": ["apac", "emea", "amer"], "threshold_ms": 200}
+            },
+            "GET /health": "returns {status: 'ok'}"
+        }
+    }
+
+
+@app.options("/")
+async def options_root():
+    # Explicitly answer preflight in addition to CORS middleware
+    return JSONResponse(
+        content={},
+        status_code=204,
+        headers={
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "POST, OPTIONS",
+            "Access-Control-Allow-Headers": "*"
+        }
+    )
 
 
 @app.get("/health")
