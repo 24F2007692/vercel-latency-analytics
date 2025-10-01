@@ -2,7 +2,16 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 
 # Reuse the embedded telemetry from the existing module to avoid duplication
-from .latency import TELEMETRY_DATA
+try:
+    # When running as a package (preferred)
+    from .latency import TELEMETRY_DATA
+except Exception:
+    try:
+        # Absolute import fallback
+        from api.latency import TELEMETRY_DATA  # type: ignore
+    except Exception:
+        # Local module fallback
+        from latency import TELEMETRY_DATA  # type: ignore
 
 app = FastAPI()
 
