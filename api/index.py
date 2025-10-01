@@ -33,6 +33,10 @@ async def ensure_cors_headers(request: Request, call_next):
     response.headers.setdefault("Access-Control-Allow-Origin", "*")
     response.headers.setdefault("Access-Control-Allow-Methods", "POST, OPTIONS")
     response.headers.setdefault("Access-Control-Allow-Headers", "*")
+    response.headers.setdefault(
+        "Access-Control-Expose-Headers",
+        "Access-Control-Allow-Origin, Access-Control-Allow-Methods, Access-Control-Allow-Headers"
+    )
     return response
 
 
@@ -88,7 +92,8 @@ async def compute_metrics(request: Request):
         headers={
             "Access-Control-Allow-Origin": "*",
             "Access-Control-Allow-Methods": "POST, OPTIONS",
-            "Access-Control-Allow-Headers": "*"
+            "Access-Control-Allow-Headers": "*",
+            "Access-Control-Expose-Headers": "Access-Control-Allow-Origin, Access-Control-Allow-Methods, Access-Control-Allow-Headers"
         }
     )
 
@@ -115,7 +120,8 @@ async def options_root():
         headers={
             "Access-Control-Allow-Origin": "*",
             "Access-Control-Allow-Methods": "POST, OPTIONS",
-            "Access-Control-Allow-Headers": "*"
+            "Access-Control-Allow-Headers": "*",
+            "Access-Control-Expose-Headers": "Access-Control-Allow-Origin, Access-Control-Allow-Methods, Access-Control-Allow-Headers"
         }
     )
 
